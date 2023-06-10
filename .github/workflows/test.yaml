@@ -21,10 +21,10 @@ jobs:
         run: pip install -r training/requirements.txt
       - name: Run formatter, linter and type checker
         run: |
-          poetry run black --check .
-        #   poetry run mypy --explicit-package-bases .
-        #   poetry run flake8 .
-        #   poetry run interrogate -vv --ignore-init-module --exclude sigma_api .
+          black --check .
+        #   mypy --explicit-package-bases .
+        #   flake8 .
+        #   interrogate -vv --ignore-init-module --exclude sigma_api .
       - name: Run tests
         run: pytest --cov=training --cov-report term --cov-report lcov:coverage.lcov -vv
     #   - name: Submit coverage report to Coveralls
