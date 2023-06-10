@@ -21,8 +21,10 @@ def test_sqli_model():
         "select * from users where id='1' or 1=1--",
         "select * from users",
         "select * from users where id=10000",
-        ("select * from test where id=1 UNION ALL "
-         "SELECT NULL FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=0; --;"),
+        (
+            "select * from test where id=1 UNION ALL "
+            "SELECT NULL FROM INFORMATION_SCHEMA.COLUMNS WHERE 1=0; --;"
+        ),
     ]
 
     # Tokenize the sample
