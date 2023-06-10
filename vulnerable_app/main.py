@@ -5,12 +5,13 @@ from flask import Flask
 def create_app():
     app = Flask(__name__)
 
-    @app.route('/test/<string:test_id>')
+    @app.route("/test/<string:test_id>")
     def test(test_id):
         try:
             # Connect to your postgres DB
             conn = psycopg2.connect(
-                "postgresql://postgres:postgres@localhost:15432/postgres?sslmode=disable")
+                "postgresql://postgres:postgres@localhost:15432/postgres?sslmode=disable"
+            )
 
             # Open a cursor to perform database operations
             cur = conn.cursor()
@@ -28,6 +29,6 @@ def create_app():
     return app
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = create_app()
     app.run(port=3000, debug=True)
