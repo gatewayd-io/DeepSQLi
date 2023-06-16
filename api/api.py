@@ -8,7 +8,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 
 MAX_WORDS = 10000
 MAX_LEN = 100
-DATASET = pd.read_csv("dataset/sqli_dataset.csv")
+DATASET = pd.read_csv("../dataset/sqli_dataset.csv")
 CONFIG = {"DEBUG": True, "CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 300}
 
 
