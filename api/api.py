@@ -2,7 +2,6 @@ import time
 
 import pandas as pd
 from flask import Flask, jsonify, request
-from flask_caching import Cache
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
 
@@ -27,13 +26,14 @@ def get_query_vec(query):
 def create_app():
     app = Flask(__name__)
     app.config.from_mapping(CONFIG)
-    cache = Cache(app)
 
-    @app.route("/tokenize_and_sequence/<query>", methods=["GET"])
-    @cache.cached(timeout=300)
-    def tokenize_and_sequence(query):
+    @app.route("/tokenize_and_sequence", methods=["POST"])
+    def tokenize_and_sequence():
         now = time.time()
-        tokens = get_query_vec(query)
+        body = request.get_json()
+        if not body:
+            return jsonify({"error": "No JSON body provided"}), 400
+        tokens = get_query_vec(body["query"])
         print("Time taken (s): ", time.time() - now)
         return jsonify({"tokens": tokens[0]})
 
