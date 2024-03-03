@@ -14,7 +14,7 @@ def test_sqli_model():
     data = pd.read_csv("dataset/sqli_dataset.csv")
 
     # Load TF model from SavedModel
-    sqli_model = load_model("sqli_model")
+    sqli_model = load_model("sqli_model/1")
 
     # Create a sample SQL injection data
     sample = [
