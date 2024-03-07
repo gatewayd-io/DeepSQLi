@@ -10,7 +10,7 @@ docker build --no-cache --tag deepsqli-api:latest .
 # Run the DeepSQLi API container
 docker run --rm --name deepsqli-api -p 8000:8000 -d deepsqli-api:latest
 # Run the TensorFlow Serving API container
-docker run -t --rm --name serving-api -p 8500-8501:8500-8501 -v ./sqli_model:/models/sqli_model -e MODEL_NAME=sqli_model tensorflow/serving
+docker run -t --rm --name serving-api -p 8500-8501:8500-8501 -v ./sqli_model:/models/sqli_model -e MODEL_NAME=sqli_model -d tensorflow/serving
 ```
 
 ### Test
