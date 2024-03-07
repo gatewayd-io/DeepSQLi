@@ -1,6 +1,7 @@
 # Deep Learning Model Training with LSTM
 
 import pandas as pd
+import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
@@ -17,7 +18,7 @@ from sklearn.metrics import (
 import numpy as np
 
 # Load dataset
-data = pd.read_csv("../model/sqli_dataset.csv")
+data = pd.read_csv("../dataset/sqli_dataset.csv")
 
 # Define parameters
 MAX_WORDS = 10000
@@ -67,4 +68,4 @@ print("Specificity: {:.2f}%".format(tn / (tn + fp) * 100))
 print("ROC: {:.2f}%".format(tp / (tp + fn) * 100))
 
 # Save model as SavedModel format
-save_model(model, "../sqli_model")
+save_model(model, "../sqli_model/1")
