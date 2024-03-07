@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "deepsqli"
+version = "0.1.0"
+description = "Deep learning model, dataset, trained model and related code for detecting SQL injection attacks"
+authors = ["Mostafa Moradian <mostafa@gatewayd.io>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+Flask = "^3.0.2"
+gunicorn = "^21.2.0"
+pandas = "^2.2.1"
+numpy = "^1.26.4"
+tensorflow = "^2.15.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

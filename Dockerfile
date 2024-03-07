@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest-py3
+FROM tensorflow/tensorflow:latest
 
 ENV KMP_AFFINITY=noverbose
 ENV TF_CPP_MIN_LOG_LEVEL=3
@@ -9,11 +9,12 @@ ENV PORT=8000
 
 WORKDIR /app
 COPY api/api.py /app
-COPY api/requirements.txt /app
+COPY api/pyproject.toml /app
+COPY api/poetry.lock /app
 COPY dataset/sqli_dataset.csv /app
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --disable-pip-version-check poetry
+RUN poetry install --no-root
 
 EXPOSE 8000
 
-CMD ["gunicorn", "-b", "${HOST}:${PORT}", "-w", ${WORKERS}, "api:app"]
+CMD poetry run gunicorn --bind ${HOST}:${PORT} --workers ${WORKERS} api:app
