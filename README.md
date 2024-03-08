@@ -5,12 +5,12 @@ Deep learning model, dataset, trained model and related code for SQL injection d
 ## Docker
 
 ```bash
-# Build the image
-docker build --no-cache --tag deepsqli-api:latest .
-# Run the DeepSQLi API container
-docker run --rm --name deepsqli-api -p 8000:8000 -d deepsqli-api:latest
-# Run the TensorFlow Serving API container
-docker run -t --rm --name serving-api -p 8500-8501:8500-8501 -v ./sqli_model:/models/sqli_model -e MODEL_NAME=sqli_model -d tensorflow/serving
+# Build the images
+docker build --no-cache --tag tokenizer-api:latest -f Dockerfile.tokenizer-api .
+docker build --no-cache --tag serving-api:latest -f Dockerfile.serving-api .
+# Run the Tokenizer and Serving API containers
+docker run --rm --name tokenizer-api -p 8000:8000 -d deepsqli-api:latest
+docker run -t --rm --name serving-api -p 8500-8501:8500-8501 -d serving-api:latest
 ```
 
 ### Test

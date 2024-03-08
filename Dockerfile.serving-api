@@ -1,0 +1,14 @@
+FROM tensorflow/serving
+
+ENV MODEL_BASE_PATH=/models
+ENV MODEL_NAME=sqli_model
+ENV KMP_AFFINITY=noverbose
+ENV TF_CPP_MIN_LOG_LEVEL=3
+
+WORKDIR /models
+COPY ./sqli_model /models/sqli_model
+
+EXPOSE 8500
+EXPOSE 8501
+
+CMD tensorflow_model_server --port=8500 --rest_api_port=8501 --model_name=${MODEL_NAME} --model_base_path=${MODEL_BASE_PATH}/${MODEL_NAME} "$@"
