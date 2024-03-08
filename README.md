@@ -9,7 +9,7 @@ Deep learning model, dataset, trained model and related code for SQL injection d
 docker build --no-cache --tag tokenizer-api:latest -f Dockerfile.tokenizer-api .
 docker build --no-cache --tag serving-api:latest -f Dockerfile.serving-api .
 # Run the Tokenizer and Serving API containers
-docker run --rm --name tokenizer-api -p 8000:8000 -d deepsqli-api:latest
+docker run --rm --name tokenizer-api -p 8000:8000 -d tokenizer-api:latest
 docker run -t --rm --name serving-api -p 8500-8501:8500-8501 -d serving-api:latest
 ```
 
