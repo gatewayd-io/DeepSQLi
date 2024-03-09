@@ -25,7 +25,7 @@ MAX_WORDS = 10000
 MAX_LEN = 100
 
 # Use Tokenizer to encode text
-tokenizer = Tokenizer(num_words=MAX_WORDS, filters='')
+tokenizer = Tokenizer(num_words=MAX_WORDS, filters="")
 tokenizer.fit_on_texts(data["Query"])
 sequences = tokenizer.texts_to_sequences(data["Query"])
 
