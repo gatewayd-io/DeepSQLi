@@ -162,3 +162,5 @@ cython_debug/
 # Coverage
 coverage.lcov
 
+# Ruff
+.ruff_cache/
