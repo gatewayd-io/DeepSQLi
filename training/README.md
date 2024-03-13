@@ -1,4 +1,10 @@
-# Result of training
+# Result of trainings
+
+## Dataset 1
+
+Command: `make train-dataset1`
+Dataset: dataset/sqli_dataset1.csv
+Model: sqli_model/1
 
 ```bash
 > python train.py
@@ -23,6 +29,41 @@ Epoch 10/10
 773/773 [==============================] - 426s 551ms/step - loss: 0.0093 - accuracy: 0.9981
 194/194 [==============================] - 8s 42ms/step
 Accuracy: 62.95%
+Recall: 0.00%
+Precision: 100.00%
+F1-score: 0.00%
+Specificity: 100.00%
+ROC: 0.00%
+```
+
+## Dataset 2
+
+Command: `make train-dataset2`
+Dataset: dataset/sqli_dataset2.csv
+Model: sqli_model/2
+
+```bash
+813/813 [==============================] - 400s 487ms/step - loss: 0.0652 - accuracy: 0.9774
+Epoch 2/10
+813/813 [==============================] - 375s 462ms/step - loss: 0.0159 - accuracy: 0.9968
+Epoch 3/10
+813/813 [==============================] - 369s 454ms/step - loss: 0.0129 - accuracy: 0.9978
+Epoch 4/10
+813/813 [==============================] - 370s 455ms/step - loss: 0.0114 - accuracy: 0.9980
+Epoch 5/10
+813/813 [==============================] - 370s 455ms/step - loss: 0.0117 - accuracy: 0.9978
+Epoch 6/10
+813/813 [==============================] - 371s 456ms/step - loss: 0.0109 - accuracy: 0.9981
+Epoch 7/10
+813/813 [==============================] - 375s 461ms/step - loss: 0.0103 - accuracy: 0.9982
+Epoch 8/10
+813/813 [==============================] - 377s 463ms/step - loss: 0.0100 - accuracy: 0.9983
+Epoch 9/10
+813/813 [==============================] - 396s 487ms/step - loss: 0.0100 - accuracy: 0.9983
+Epoch 10/10
+813/813 [==============================] - 423s 520ms/step - loss: 0.0099 - accuracy: 0.9983
+204/204 [==============================] - 8s 38ms/step
+Accuracy: 64.61%
 Recall: 0.00%
 Precision: 100.00%
 F1-score: 0.00%
