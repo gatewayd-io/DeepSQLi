@@ -1,8 +1,9 @@
 FROM tensorflow/tensorflow:latest
 
+ENV dataset=sqli_dataset1.csv
 ENV KMP_AFFINITY=noverbose
 ENV TF_CPP_MIN_LOG_LEVEL=3
-ENV DATASET_PATH=/app/sqli_dataset.csv
+ENV DATASET_PATH=/app/${dataset}
 ENV WORKERS=4
 ENV HOST=0.0.0.0
 ENV PORT=8000
@@ -11,7 +12,7 @@ WORKDIR /app
 COPY api/api.py /app
 COPY api/pyproject.toml /app
 COPY api/poetry.lock /app
-COPY dataset/sqli_dataset.csv /app
+COPY dataset/${dataset} /app
 RUN pip install --disable-pip-version-check poetry
 RUN poetry install --no-root
 

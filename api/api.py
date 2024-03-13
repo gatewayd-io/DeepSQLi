@@ -7,7 +7,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 
 MAX_WORDS = 10000
 MAX_LEN = 100
-DATASET_PATH = os.getenv("DATASET_PATH", "dataset/sqli_dataset.csv")
+DATASET_PATH = os.getenv("DATASET_PATH", "dataset/sqli_dataset1.csv")
 DATASET = pd.read_csv(DATASET_PATH)
 TOKENIZER = Tokenizer(num_words=MAX_WORDS, filters="")
 TOKENIZER.fit_on_texts(DATASET["Query"])
