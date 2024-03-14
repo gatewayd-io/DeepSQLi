@@ -51,7 +51,7 @@ model.add(Dense(1, activation="sigmoid"))
 model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
 
 # Train model
-model.fit(X_train, y_train, epochs=10, batch_size=32)
+model.fit(X_train, y_train, epochs=11, batch_size=32)
 
 # Predict test set
 y_pred = model.predict(X_test)
