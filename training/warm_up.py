@@ -47,7 +47,7 @@ with TFRecordWriter(str(WARM_UP_DIR / WARM_UP_FILE)) as writer:
     predict_request = predict_pb2.PredictRequest()
     predict_request.model_spec.name = "sqli_model"
     predict_request.model_spec.signature_name = "serving_default"
-    predict_request.inputs["tokens"].CopyFrom(
+    predict_request.inputs["embedding_input"].CopyFrom(
         tensor_util.make_tensor_proto(query_vec, float32)
     )
 
