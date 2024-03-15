@@ -3,7 +3,7 @@ services:
   tokenizer-api:
     build:
       context: .
-      dockerfile: Dockerfile.serving-api
+      dockerfile: Dockerfile.tokenizer-api
     image: tokenizer-api:latest
     ports:
       - "8000:8000"
