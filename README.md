@@ -13,6 +13,15 @@ docker run --rm --name tokenizer-api -p 8000:8000 -d tokenizer-api:latest
 docker run --rm --name serving-api -p 8500-8501:8500-8501 -d serving-api:latest
 ```
 
+## Docker Compose
+
+```bash
+# Run the Tokenizer and Serving API containers
+docker compose up -d
+# Stop the Tokenizer and Serving API containers
+docker compose down
+```
+
 ### Test
 
 ```bash

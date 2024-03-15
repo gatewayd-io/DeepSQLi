@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  tokenizer-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.serving-api
+    image: tokenizer-api:latest
+    ports:
+      - "8000:8000"
+  serving-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.serving-api
+    image: serving-api:latest
+    ports:
+      - "8500:8500"
+      - "8501:8501"
