@@ -4,4 +4,5 @@ pandas==2.0.1
 pytest==7.2.2
 pytest-cov==4.1.0
 scikit_learn==1.2.2
-tensorflow==2.12.0
+tensorflow==2.16.1
+tensorflow-serving-api==2.16.1
