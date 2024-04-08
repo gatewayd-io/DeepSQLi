@@ -45,10 +45,10 @@ The fastest way to get started is to use Docker and Docker Compose. If you don't
 
 ### Docker Compose
 
-Use the following commands to build and run the Tokenizer and Serving API containers using Docker Compose (recommended):
+Use the following command to build and run the Tokenizer and Serving API containers using Docker Compose (recommended). Note that `--build` is only needed the first time, and you can omit it later.
 
 ```bash
-docker compose up -d
+docker compose up --build -d
 ```
 
 To stop the containers, use the following command:
