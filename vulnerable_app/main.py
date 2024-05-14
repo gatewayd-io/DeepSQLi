@@ -5,8 +5,8 @@ from flask import Flask
 def create_app():
     app = Flask(__name__)
 
-    @app.route("/test/<string:test_id>")
-    def test(test_id):
+    @app.route("/customer/<string:customer_id>")
+    def customer(customer_id):
         try:
             # Connect to your postgres DB
             conn = psycopg2.connect(
@@ -17,7 +17,7 @@ def create_app():
             cur = conn.cursor()
 
             # Execute a query
-            cur.execute(f"SELECT * FROM test WHERE id = {test_id};")
+            cur.execute(f"SELECT * FROM customer WHERE customer_id = {customer_id};")
 
             # Retrieve query results
             records = cur.fetchall()
