@@ -12,6 +12,7 @@ tensorflow = "^2.16.1"
 scikit-learn = "^1.4.2"
 pandas = "^2.2.2"
 numpy = "^1.26.4"
+tensorflow-serving-api = "^2.16.1"
 
 
 [tool.poetry.group.dev.dependencies]
