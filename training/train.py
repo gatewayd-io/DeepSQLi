@@ -44,7 +44,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, LSTM, Dense
-from tensorflow.keras.models import save_model
+from tensorflow.keras.metrics import Accuracy, Recall, Precision, F1Score
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     accuracy_score,
@@ -86,13 +86,22 @@ model = Sequential()
 model.add(Embedding(MAX_WORDS, 128, input_length=MAX_LEN))
 model.add(LSTM(64, dropout=0.2, recurrent_dropout=0.2))
 model.add(Dense(1, activation="sigmoid"))
-model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+model.compile(
+    loss="binary_crossentropy",
+    optimizer="adam",
+    metrics=[
+        Accuracy(),
+        Recall(),
+        Precision(),
+        F1Score(),
+    ],
+)
 
 # Train model
-model.fit(X_train, y_train, epochs=11, batch_size=32)
+model.fit(X_train, y_train, epochs=11, batch_size=32, verbose=0)
 
 # Predict test set
-y_pred = model.predict(X_test)
+y_pred = model.predict(X_test, verbose=0)
 y_pred_classes = np.argmax(y_pred, axis=1)
 
 # Calculate model performance indicators
@@ -111,4 +120,4 @@ print("Specificity: {:.2f}%".format(tn / (tn + fp) * 100))
 print("ROC: {:.2f}%".format(tp / (tp + fn) * 100))
 
 # Save model as SavedModel format
-save_model(model, sys.argv[2])
+model.export(sys.argv[2])
