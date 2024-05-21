@@ -18,12 +18,18 @@ MODELV2 = {
     "model_path": "sqli_model/2",
     "index": 1,
 }
+MODELV3 = {
+    "dataset": "dataset/sqli_dataset2.csv",
+    "model_path": "sqli_model/3",
+    "index": 2,
+}
 
 
 @pytest.fixture(
     params=[
         MODELV1,
         MODELV2,
+        MODELV3,
     ],
 )
 def model(request):
@@ -47,18 +53,18 @@ def model(request):
 @pytest.mark.parametrize(
     "sample",
     [
-        ("select * from users where id=1 or 1=1;", [99.99, 28.87]),
-        ("select * from users where id='1' or 1=1--", [92.02, 28.87]),
-        ("select * from users", [0.077, 0.08]),
-        ("select * from users where id=10000", [14.83, 4.137]),
-        ("select '1' union select 'a'; -- -'", [99.99, 97.32]),
+        ("select * from users where id=1 or 1=1;", [99.99, 28.87, 11.96]),
+        ("select * from users where id='1' or 1=1--", [92.02, 28.87, 11.96]),
+        ("select * from users", [0.077, 0.08, 0.002]),
+        ("select * from users where id=10000", [14.83, 4.137, 0.229]),
+        ("select '1' union select 'a'; -- -'", [99.99, 97.32, 99.97]),
         (
             "select '' union select 'malicious php code' \g /var/www/test.php; -- -';",
-            [99.99, 99.99],
+            [99.99, 99.99, 99.98],
         ),
         (
             "select '' || pg_sleep((ascii((select 'a' limit 1)) - 32) / 2); -- -';",
-            [99.99, 99.99],
+            [99.99, 99.99, 99.93],
         ),
     ],
 )
@@ -73,7 +79,7 @@ def test_sqli_model(model, sample):
     # Scale up to 100
     output = "dense"
     if "output_0" in predictions:
-        output = "output_0"  # Model v2 uses output_0 instead of dense
+        output = "output_0"  # Model v2 and v3 use output_0 instead of dense
 
     print(predictions[output].numpy() * 100)  # Debugging purposes (prints on error)
     assert predictions[output].numpy() * 100 == pytest.approx(
