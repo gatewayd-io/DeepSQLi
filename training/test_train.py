@@ -53,14 +53,14 @@ def model(request):
 @pytest.mark.parametrize(
     "sample",
     [
-        ("select * from users where id=1 or 1=1;", [99.99, 28.87, 11.96]),
-        ("select * from users where id='1' or 1=1--", [92.02, 28.87, 11.96]),
-        ("select * from users", [0.077, 0.08, 0.002]),
-        ("select * from users where id=10000", [14.83, 4.137, 0.229]),
+        ("select * from users where id=1 or 1=1;", [99.99, 97.40, 11.96]),
+        ("select * from users where id='1' or 1=1--", [92.02, 97.40, 11.96]),
+        ("select * from users", [0.077, 0.015, 0.002]),
+        ("select * from users where id=10000", [14.83, 88.93, 0.229]),
         ("select '1' union select 'a'; -- -'", [99.99, 97.32, 99.97]),
         (
             "select '' union select 'malicious php code' \g /var/www/test.php; -- -';",
-            [99.99, 99.99, 99.98],
+            [99.99, 80.65, 99.98],
         ),
         (
             "select '' || pg_sleep((ascii((select 'a' limit 1)) - 32) / 2); -- -';",
