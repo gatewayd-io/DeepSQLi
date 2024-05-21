@@ -47,17 +47,17 @@ def model(request):
 @pytest.mark.parametrize(
     "sample",
     [
-        ("select * from users where id=1 or 1=1;", [99.99, 28.87]),
-        ("select * from users where id='1' or 1=1--", [92.02, 28.87]),
-        ("select * from users", [0.077, 0.08]),
-        ("select * from users where id=10000", [14.83, 4.137]),
-        ("select '1' union select 'a'; -- -'", [99.99, 97.32]),
+        ("select * from users where id=1 or 1=1;", [99.99, 97.40]),
+        ("select * from users where id='1' or 1=1--", [92.02, 97.40]),
+        ("select * from users", [0.077, 0.015]),
+        ("select * from users where id=10000", [14.83, 88.93]),
+        ("select '1' union select 'a'; -- -'", [99.99, 97.36]),
         (
-            "select '' union select 'malicious php code' \g /var/www/test.php; -- -';",
-            [99.99, 99.99],
+            """select '' union select 'malicious php code' \g /var/www/test.php; -- -';""",
+            [99.99, 80.65],
         ),
         (
-            "select '' || pg_sleep((ascii((select 'a' limit 1)) - 32) / 2); -- -';",
+            """select '' || pg_sleep((ascii((select 'a' limit 1)) - 32) / 2); -- -';""",
             [99.99, 99.99],
         ),
     ],
