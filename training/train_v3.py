@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import Sequential, save_model
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import (
     Bidirectional,
     Conv1D,
