@@ -11,8 +11,8 @@ from tensorflow_serving.apis import prediction_log_pb2
 import pandas as pd
 
 # Check if the input and output model directories are provided
-if len(sys.argv) != 3:
-    print("Usage: python train.py <dataset_file> <model_dir>")
+if len(sys.argv) != 4:
+    print("Usage: python train.py <dataset_file> <model_dir> <is_keras_tensor>")
     sys.exit(1)
 
 # Define parameters and constants
@@ -47,9 +47,14 @@ with TFRecordWriter(str(WARM_UP_DIR / WARM_UP_FILE)) as writer:
     predict_request = predict_pb2.PredictRequest()
     predict_request.model_spec.name = "sqli_model"
     predict_request.model_spec.signature_name = "serving_default"
-    predict_request.inputs["embedding_input"].CopyFrom(
-        tensor_util.make_tensor_proto(query_vec, float32)
-    )
+    if sys.argv[3].lower() == "true":
+        predict_request.inputs["keras_tensor"].CopyFrom(
+            tensor_util.make_tensor_proto(query_vec, float32)
+        )
+    else:
+        predict_request.inputs["embedding_input"].CopyFrom(
+            tensor_util.make_tensor_proto(query_vec, float32)
+        )
 
     # Create a prediction log
     prediction_log = prediction_log_pb2.PredictionLog(
