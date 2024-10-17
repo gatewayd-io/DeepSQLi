@@ -59,7 +59,7 @@ def model(request):
         ("select * from users where id=10000", [14.83, 88.93, 0.229]),
         ("select '1' union select 'a'; -- -'", [99.99, 97.32, 99.97]),
         (
-            "select '' union select 'malicious php code' \g /var/www/test.php; -- -';",
+            "select '' union select 'malicious php code' \\g /var/www/test.php; -- -';",
             [99.99, 80.65, 99.98],
         ),
         (
