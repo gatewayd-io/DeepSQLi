@@ -1,6 +1,6 @@
 FROM tensorflow/tensorflow:latest
 
-ENV dataset=sqli_dataset1.csv
+ENV dataset=sqli_dataset2.csv
 ENV KMP_AFFINITY=noverbose
 ENV TF_CPP_MIN_LOG_LEVEL=3
 ENV DATASET_PATH=/app/${dataset}

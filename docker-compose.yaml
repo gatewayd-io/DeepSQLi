@@ -21,7 +21,7 @@ services:
     ports:
       - "8500:8500"
       - "8501:8501"
-  postgres:
+  postgres1:
     image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
@@ -33,3 +33,15 @@ services:
       retries: 5
     ports:
       - "5432:5432"
+  postgres2:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5433:5432"
