@@ -23,7 +23,7 @@ jobs:
           cd training && poetry install --with dev --no-root
       - name: Run formatter, linter and type checker
         run: |
-          poetry run ruff check training
+          poetry run ruff check .
         #   mypy --explicit-package-bases .
         #   flake8 .
         #   interrogate -vv --ignore-init-module --exclude sigma_api .
