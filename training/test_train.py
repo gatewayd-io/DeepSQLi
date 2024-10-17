@@ -34,7 +34,12 @@ MODELV3 = {
 )
 def model(request):
     # Load dataset
-    data = pd.read_csv(request.param["dataset"])
+    data = None
+    try:
+        data = pd.read_csv(request.param["dataset"])
+    except FileNotFoundError:
+        # Check if the dataset is in the parent directory
+        data = pd.read_csv("../" + request.param["dataset"])
 
     # Load TF model from SavedModel
     sqli_model = TFSMLayer(request.param["model_path"], call_endpoint="serving_default")
