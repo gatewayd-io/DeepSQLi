@@ -18,7 +18,9 @@ jobs:
         with:
           python-version: 3.11
       - name: Install dependencies
-        run: pip install -r training/requirements.txt
+        run: |
+          pip install poetry
+          cd training && poetry install
       - name: Run formatter, linter and type checker
         run: |
           black --check .
