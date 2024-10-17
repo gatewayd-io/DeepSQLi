@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
-          cd training && poetry install
+          cd training && poetry install --with dev --no-root
       - name: Run formatter, linter and type checker
         run: |
           ruff check training
