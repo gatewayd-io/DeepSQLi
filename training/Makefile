@@ -17,4 +17,4 @@ train-dataset2-model3:
 	poetry run python train_v3.py ../dataset/sqli_dataset2.csv ../sqli_model/3
 	# Add warm-up to the model to load the model into memory after
 	# starting the Serving API container
-	poetry run python warm_up.py ../dataset/sqli_dataset2.csv ../sqli_model/3
+	poetry run python warm_up.py ../dataset/sqli_dataset2.csv ../sqli_model/3 true
