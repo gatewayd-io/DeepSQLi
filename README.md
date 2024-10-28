@@ -97,3 +97,7 @@ We welcome contributions from everyone.<!-- Please read our [contributing guide]
 ## License
 
 This plugin is licensed under the [Affero General Public License v3.0](https://github.com/gatewayd-io/DeepSQLi/blob/main/LICENSE).
+
+## Acknowledgements
+
+This project is inspired by the [SQL Injection Dataset](https://www.kaggle.com/datasets/sajid576/sql-injection-dataset) project by [Abu Syeed Sajid Ahmed](https://github.com/Sajid576) and the [A CNN-BiLSTM based Approach for Detection of SQL Injection Attacks](https://ieeexplore.ieee.org/document/9410675/) conference paper by [Neel Gandhi, et al](https://ieeexplore.ieee.org/document/9410675/authors#authors).
