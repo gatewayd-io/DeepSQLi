@@ -1,112 +1,91 @@
 # DeepSQLi
 
-This repository contains the code for the DeepSQLi project. The project aims to detect SQL injection attacks using deep learning models. The project consists of two main components: **Tokenizer API** and **Serving API**. The Tokenizer API tokenizes and sequences the input query, while the Serving API predicts whether the query is SQL injection or not.
+**DeepSQLi** is a project designed to detect SQL injection (SQLi) attacks using deep learning models. It provides a **Prediction API**, a Flask application that tokenizes and sequences SQL queries, and then predicts whether a query is an SQL injection.
 
-The Tokenizer API is built using Flask and TensorFlow, and the Serving API is built using TensorFlow Serving. The Tokenizer API is responsible for tokenizing and sequencing the input query using the corresponding [dataset](./dataset/), and the Serving API is responsible for predicting whether the query is SQL injection or not using the trained deep learning [model](./sqli_model/).
+## Project Overview
 
-The project also includes a [SQL IDS/IPS plugin](https://github.com/gatewayd-io/gatewayd-plugin-sql-ids-ips) that integrates with the GatewayD database gatewayd. The plugin serves as a frontend for these APIs. It intercepts the incoming queries and sends them to the Serving API for prediction. If the query is predicted as SQL injection, the plugin terminates the request; otherwise, it forwards the query to the database.
+The **Prediction API** handles both tokenization and prediction in a single endpoint, simplifying the detection workflow. It processes incoming SQL queries and determines if they contain SQL injection patterns.
 
-The following diagram shows the architecture of the project:
+### GatewayD Integration
+
+This project can be integrated with [GatewayD](https://github.com/gatewayd-io/gatewayd) using the [GatewayD SQL IDS/IPS plugin](https://github.com/gatewayd-io/gatewayd-plugin-sql-ids-ips). The plugin acts as a middleware between clients and the database, intercepting SQL queries and sending them to the Prediction API for analysis. If a query is classified as malicious by the Prediction API, the plugin blocks the query; otherwise, it forwards the query to the database.
+
+### Architecture
 
 ```mermaid
 flowchart TD
     Client <-- PostgreSQL wire protocol:15432 --> GatewayD
-    GatewayD <--> Sq["SQL IDS/IPS plugin"]
-    Sq <-- http:8000 --> T["Tokenizer API"]
-    Sq <-- http:8501 --> S["Serving API"]
-    S -- loads --> SM["SQLi models"]
-    T -- loads --> Dataset
-    Sq -- threshold: 80% --> D{Malicious query?}
+    GatewayD <--> P["Prediction API"]
+    P --loads--> SM["SQLi Model"]
+    P --threshold: 80% --> D{Malicious query?}
     D -->|No: send to| Database
     D -->|Yes: terminate request| GatewayD
 ```
 
-There are currently two models available and trained using the [dataset](./dataset/). Both models are trained using the same model architecture, but they are trained using different datasets. The first model is trained using the [SQLi dataset v1](./dataset/sqli_dataset1.csv), and the second model is trained using the [SQLi dataset v2](./dataset/sqli_dataset2.csv). The models are trained using the following hyperparameters:
+## Models and Tokenization
 
-- Model architecture: LSTM (Long Short-Term Memory)
-- Embedding dimension: 128
-- LSTM units: 64
-- Dropout rate: 0.2
-- Learning rate: 0.001
-- Loss function: Binary crossentropy
-- Optimizer: Adam
-- Metrics: Accuracy, precision, recall, and F1 score
-- Validation split: 0.2
-- Dense layer units: 1
-- Activation function: Sigmoid
-- Maximum sequence length: 100
-- Maximum number of tokens: 10000
-- Maximum number of epochs: 11
-- Batch size: 32
+### Model Versions
+
+- **LSTM Models**: The first two models are LSTM-based and are trained using different datasets:
+  - **`sqli_model/1`**: Trained on dataset v1 (for historical purposes, will remove in the future).
+  - **`sqli_model/2`**: Trained on dataset v2 (for historical purposes, will remove in the future).
+
+- **CNN-LSTM Model**: The third model, **`sqli_model/3`**, is a hybrid CNN-LSTM model with a custom SQL tokenizer to improve performance on SQL injection patterns (recommended).
+
+### Tokenization
+
+The Prediction API performs tokenization internally:
+
+- **Default Tokenizer** (Models 1 and 2): Uses Keras’s `Tokenizer` for general tokenization.
+- **Custom SQL Tokenizer** (Model 3): A custom tokenizer designed to handle SQL syntax and injection-specific patterns.
 
 ## Installation
 
-The fastest way to get started is to use Docker and Docker Compose. If you don't have Docker installed, you can install it by following the instructions [here](https://docs.docker.com/get-docker/).
-
 ### Docker Compose
 
-Use the following command to build and run the Tokenizer and Serving API containers using Docker Compose (recommended). Note that `--build` is only needed the first time, and you can omit it later.
+To start the Prediction API with Docker Compose:
 
 ```bash
 docker compose up --build -d
 ```
 
-To stop the containers, use the following command:
-
-```bash
-docker compose stop
-```
-
-To remove the containers and release their resources, use the following command:
+To stop and remove the containers:
 
 ```bash
 docker compose down
 ```
 
-### Docker
+### Docker (Manual Setup)
 
-#### Build the images
+#### Build Images
 
 ```bash
-docker build --no-cache --tag tokenizer-api:latest -f Dockerfile.tokenizer-api .
-docker build --no-cache --tag serving-api:latest -f Dockerfile.serving-api .
+docker build --no-cache --tag prediction-api:latest -f Dockerfile .
 ```
 
-#### Run the containers
+#### Run the Container
 
 ```bash
-docker run --rm --name tokenizer-api -p 8000:8000 -d tokenizer-api:latest
-docker run --rm --name serving-api -p 8500-8501:8500-8501 -d serving-api:latest
+docker run --rm --name prediction-api -p 8000:8000 -d prediction-api:latest
 ```
 
-### Test
+## Usage
 
-You can test the APIs using the following commands:
+Once the Prediction API is running, use the `predict` endpoint to classify SQL queries.
 
-#### Tokenizer API
+### Prediction API
 
 ```bash
-# Tokenize and sequence the query
-curl 'http://localhost:8000/tokenize_and_sequence' -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"query":"select * from users where id = 1 or 1=1"}'
+curl 'http://localhost:8000/predict' -X POST -H 'Content-Type: application/json' \
+--data-raw '{"query":"SELECT * FROM users WHERE id=1 OR 1=1;"}'
 ```
 
-#### Serving API
+### Response Format
 
-```bash
-# Predict whether the query is SQLi or not
-curl 'http://localhost:8501/v1/models/sqli_model/versions/3:predict' -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"inputs":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,21,4,32,3,10,3,3]]}'
-```
+The response includes the prediction (`1` for SQL injection, `0` for legitimate query) and confidence score. Note that the confidence score is only available for the CNN-LSTM model using the Prediction API.
 
-#### One-liner
-
-```bash
-# Or you can use the following one-liner:
-curl -s 'http://localhost:8501/v1/models/sqli_model/versions/3:predict' -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"inputs":['$(curl -s 'http://localhost:8000/tokenize_and_sequence' -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' --data-raw '{"query":"select * from users where id = 1 or 1=1"}' | jq -c .tokens)']}' | jq
-```
-
-#### Model metadata
-
-```bash
-# Get the model metadata
-curl -X GET 'http://localhost:8501/v1/models/sqli_model/versions/3/metadata'
+```json
+{
+    "confidence": 0.9722,
+}
 ```
