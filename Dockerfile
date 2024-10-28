@@ -13,6 +13,8 @@ COPY api/api.py /app
 COPY api/pyproject.toml /app
 COPY api/poetry.lock /app
 COPY dataset/${dataset} /app
+COPY training/sql_tokenizer.py /app/
+COPY training/sql_tokenizer_vocab.json /app/
 COPY sqli_model/ /app/sqli_model/
 RUN pip install --disable-pip-version-check poetry
 RUN poetry install --no-root

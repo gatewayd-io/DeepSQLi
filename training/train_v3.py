@@ -2,8 +2,6 @@ import sys
 import os
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import (
     Bidirectional,
@@ -21,6 +19,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
 import matplotlib.pyplot as plt
+from sql_tokenizer import SQLTokenizer
 
 
 def load_data(file_path):
@@ -33,11 +32,11 @@ def load_data(file_path):
 
 
 def preprocess_text(data, max_words=10000, max_len=100):
-    """Tokenize and pad text data."""
-    tokenizer = Tokenizer(num_words=max_words, oov_token="<OOV>")
+    """Tokenize and pad text data using SQLTokenizer."""
+    tokenizer = SQLTokenizer(max_words=max_words)
     tokenizer.fit_on_texts(data["Query"])
     sequences = tokenizer.texts_to_sequences(data["Query"])
-    return pad_sequences(sequences, maxlen=max_len), tokenizer
+    return sequences, tokenizer
 
 
 def build_model(input_dim, output_dim=128):
@@ -97,10 +96,9 @@ def plot_history(history):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python train.py <input_file> <output_dir>")
+        print("Usage: python train_v3.py <input_file> <output_dir>")
         sys.exit(1)
 
-    # Constants
     MAX_WORDS = 10000
     MAX_LEN = 100
     EPOCHS = 50
@@ -108,8 +106,8 @@ if __name__ == "__main__":
 
     # Load and preprocess data
     data = load_data(sys.argv[1])
-    X, tokenizer = preprocess_text(data)
-    y = data["Label"].values  # Convert to NumPy array to avoid KeyError in KFold
+    X, tokenizer = preprocess_text(data, max_words=MAX_WORDS)
+    y = data["Label"].values  # Convert to NumPy array for compatibility with KFold
 
     # Initialize cross-validation
     k_folds = 5
@@ -120,7 +118,7 @@ if __name__ == "__main__":
         print(f"Training fold {fold}/{k_folds}")
 
         # Split the data
-        X_train, X_val = X[train_idx], X[val_idx]
+        X_train, X_val = np.array(X)[train_idx], np.array(X)[val_idx]
         y_train, y_val = y[train_idx], y[val_idx]
 
         # Compute class weights to handle imbalance
@@ -130,7 +128,7 @@ if __name__ == "__main__":
         class_weight_dict = {i: class_weights[i] for i in range(len(class_weights))}
 
         # Build and train the model
-        model = build_model(input_dim=len(tokenizer.word_index) + 1)
+        model = build_model(input_dim=len(tokenizer.token_index) + 1)
         early_stopping = EarlyStopping(
             monitor="val_loss", patience=5, restore_best_weights=True
         )
