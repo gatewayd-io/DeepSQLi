@@ -89,3 +89,11 @@ The response includes the prediction (`1` for SQL injection, `0` for legitimate 
     "confidence": 0.9722,
 }
 ```
+
+## Contributing
+
+We welcome contributions from everyone.<!-- Please read our [contributing guide](https://gatewayd-io.github.io/CONTIBUTING.md) for more details.--> Just open an [issue](https://github.com/gatewayd-io/DeepSQLi/issues) or send us a [pull request](https://github.com/gatewayd-io/DeepSQLi/pulls).
+
+## License
+
+This plugin is licensed under the [Affero General Public License v3.0](https://github.com/gatewayd-io/DeepSQLi/blob/main/LICENSE).
