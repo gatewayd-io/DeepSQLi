@@ -23,6 +23,16 @@ loaded_model = tf.saved_model.load(MODEL_PATH)
 model_predict = loaded_model.signatures["serving_default"]
 
 
+def warm_up_model():
+    """Sends a dummy request to the model to 'warm it up'."""
+    dummy_query = "SELECT * FROM users WHERE id = 1"
+    query_seq = TOKENIZER.texts_to_sequences([dummy_query])
+    query_vec = pad_sequences(query_seq, maxlen=MAX_LEN)
+    input_tensor = tf.convert_to_tensor(query_vec, dtype=tf.float32)
+    _ = model_predict(input_tensor)  # Make a dummy prediction to initialize the model
+    print("Model warmed up and ready to serve requests.")
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     if not request.json or "query" not in request.json:
@@ -54,4 +64,5 @@ def predict():
 
 
 if __name__ == "__main__":
+    warm_up_model()
     app.run(host="0.0.0.0", port=8000, debug=True)
