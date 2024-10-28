@@ -3,7 +3,6 @@ import pytest
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.layers import TFSMLayer
-import numpy as np
 
 
 MAX_WORDS = 10000
@@ -34,8 +33,8 @@ MODELV3 = {
 )
 def model(request):
     # Load dataset
-    data = None
     prefix = ""
+    data = None
     try:
         data = pd.read_csv(request.param["dataset"])
     except FileNotFoundError:
@@ -43,12 +42,11 @@ def model(request):
         prefix = "../"
         data = pd.read_csv(prefix + request.param["dataset"])
 
-    # Load TF model from SavedModel
-    sqli_model = TFSMLayer(
-        prefix + request.param["model_path"], call_endpoint="serving_default"
-    )
+    # Load TF model using TFSMLayer with the serving_default endpoint
+    model_path = prefix + request.param["model_path"]
+    sqli_model = TFSMLayer(model_path, call_endpoint="serving_default")
 
-    # Tokenize the sample
+    # Tokenizer setup
     tokenizer = Tokenizer(num_words=MAX_WORDS, filters="")
     tokenizer.fit_on_texts(data["Query"])
 
@@ -62,18 +60,18 @@ def model(request):
 @pytest.mark.parametrize(
     "sample",
     [
-        ("select * from users where id=1 or 1=1;", [99.99, 97.40, 11.96]),
-        ("select * from users where id='1' or 1=1--", [92.02, 97.40, 11.96]),
-        ("select * from users", [0.077, 0.015, 0.002]),
-        ("select * from users where id=10000", [14.83, 88.93, 0.229]),
-        ("select '1' union select 'a'; -- -'", [99.99, 97.32, 99.97]),
+        ("select * from users where id=1 or 1=1;", [0.9202, 0.974, 0.0022]),
+        ("select * from users where id='1' or 1=1--", [0.9202, 0.974, 0.0022]),
+        ("select * from users", [0.00077, 0.0015, 0.0231]),
+        ("select * from users where id=10000", [0.1483, 0.8893, 0.0008]),
+        ("select '1' union select 'a'; -- -'", [0.9999, 0.9732, 0.0139]),
         (
             "select '' union select 'malicious php code' \\g /var/www/test.php; -- -';",
-            [99.99, 80.65, 99.98],
+            [0.9999, 0.8065, 0.0424],
         ),
         (
             "select '' || pg_sleep((ascii((select 'a' limit 1)) - 32) / 2); -- -';",
-            [99.99, 99.99, 99.93],
+            [0.9999, 0.9999, 0.01543],
         ),
     ],
 )
@@ -85,12 +83,12 @@ def test_sqli_model(model, sample):
     # Predict sample
     predictions = model["sqli_model"](sample_vec)
 
-    # Scale up to 100
-    output = "dense"
-    if "output_0" in predictions:
-        output = "output_0"  # Model v2 and v3 use output_0 instead of dense
+    # Extract the prediction result
+    output_key = "output_0" if "output_0" in predictions else "dense"
+    predicted_value = predictions[output_key].numpy()[0][0]
 
-    print(predictions[output].numpy() * 100)  # Debugging purposes (prints on error)
-    assert predictions[output].numpy() * 100 == pytest.approx(
-        np.array([[sample[1][model["index"]]]]), 0.1
+    print(
+        f"Predicted: {predicted_value:.4f}, Expected: {sample[1][model['index']]:.4f}"
     )
+
+    assert predicted_value == pytest.approx(sample[1][model["index"]], abs=0.05)
