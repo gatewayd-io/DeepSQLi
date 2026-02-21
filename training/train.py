@@ -13,7 +13,6 @@ from sklearn.metrics import (
     f1_score,
     confusion_matrix,
 )
-import numpy as np
 
 # Check if the input file and output directory are provided
 if len(sys.argv) != 3:

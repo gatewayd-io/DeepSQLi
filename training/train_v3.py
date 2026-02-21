@@ -109,6 +109,12 @@ if __name__ == "__main__":
     X, tokenizer = preprocess_text(data, max_words=MAX_WORDS)
     y = data["Label"].values  # Convert to NumPy array for compatibility with KFold
 
+    # Save the deterministic vocabulary for inference
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    vocab_path = os.path.join(script_dir, "sql_tokenizer_vocab.json")
+    tokenizer.save_token_index(vocab_path)
+    print(f"Saved tokenizer vocabulary ({len(tokenizer.token_index)} tokens) to {vocab_path}")
+
     # Initialize cross-validation
     k_folds = 5
     kfold = KFold(n_splits=k_folds, shuffle=True, random_state=42)
