@@ -6,12 +6,12 @@ authors = ["Mostafa Moradian <mostafa@gatewayd.io>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = "^3.12"
 Flask = "^3.0.2"
 gunicorn = "^21.2.0"
-pandas = "^2.2.1"
+pandas = "^2.2.2"
 numpy = "^1.26.4"
-tensorflow = "^2.15.0"
+tensorflow = "^2.16.1"
 
 [build-system]
 requires = ["poetry-core"]
