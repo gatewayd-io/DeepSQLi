@@ -25,5 +25,9 @@ jobs:
         run: cd training && poetry run ruff check .
       - name: Lint API code
         run: cd training && poetry run ruff check ../api/
-      - name: Run tests
+      - name: Run training tests
         run: cd training && poetry run pytest --cov=training --cov-report term --cov-report lcov:coverage.lcov -vv
+      - name: Install API dependencies
+        run: cd api && pip install flask
+      - name: Run API tests
+        run: cd training && poetry run pytest ../api/test_api.py -vv
