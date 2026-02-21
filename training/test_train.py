@@ -77,6 +77,11 @@ def model(request):
     }
 
 
+# Model v3 (CNN-BiLSTM) shows significant quality regressions compared to v1/v2:
+#   - Classic SQLi queries like "OR 1=1" score only ~0.32 (should be >0.8)
+#   - UNION-based injections score <0.05 (should be >0.8)
+#   - Legitimate "WHERE id=10000" scores 0.73 (dangerously close to 0.8 threshold)
+# The model needs retraining with the deterministic tokenizer. See issue #1.
 @pytest.mark.parametrize(
     "sample",
     [
