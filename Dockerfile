@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest
+FROM tensorflow/tensorflow:2.16.1
 
 ENV dataset=sqli_dataset2.csv
 ENV KMP_AFFINITY=noverbose
