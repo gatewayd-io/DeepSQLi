@@ -148,15 +148,15 @@ if __name__ == "__main__":
         accuracy = accuracy_score(y_val, y_val_pred)
         precision = precision_score(y_val, y_val_pred)
         recall = recall_score(y_val, y_val_pred)
-        f1_score = calculate_f1_f2(precision, recall, beta=1)
-        f2_score = calculate_f1_f2(precision, recall, beta=2)
+        f1 = calculate_f1_f2(precision, recall, beta=1)
+        f2 = calculate_f1_f2(precision, recall, beta=2)
 
         # Collect fold metrics
         fold_metrics["accuracy"].append(accuracy)
         fold_metrics["precision"].append(precision)
         fold_metrics["recall"].append(recall)
-        fold_metrics["f1"].append(f1_score)
-        fold_metrics["f2"].append(f2_score)
+        fold_metrics["f1"].append(f1)
+        fold_metrics["f2"].append(f2)
 
     # Calculate and display average metrics across folds
     avg_metrics = {metric: np.mean(scores) for metric, scores in fold_metrics.items()}

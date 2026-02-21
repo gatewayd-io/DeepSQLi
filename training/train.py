@@ -62,7 +62,7 @@ model.fit(X_train, y_train, epochs=11, batch_size=32)
 
 # Predict test set
 y_pred = model.predict(X_test)
-y_pred_classes = np.argmax(y_pred, axis=1)
+y_pred_classes = (y_pred > 0.5).astype(int).flatten()
 
 # Calculate model performance indicators
 accuracy = accuracy_score(y_test, y_pred_classes)
