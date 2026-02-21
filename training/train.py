@@ -13,7 +13,6 @@ from sklearn.metrics import (
     f1_score,
     confusion_matrix,
 )
-import numpy as np
 
 # Check if the input file and output directory are provided
 if len(sys.argv) != 3:
@@ -62,7 +61,7 @@ model.fit(X_train, y_train, epochs=11, batch_size=32)
 
 # Predict test set
 y_pred = model.predict(X_test)
-y_pred_classes = np.argmax(y_pred, axis=1)
+y_pred_classes = (y_pred > 0.5).astype(int).flatten()
 
 # Calculate model performance indicators
 accuracy = accuracy_score(y_test, y_pred_classes)

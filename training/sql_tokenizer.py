@@ -22,8 +22,8 @@ class SQLTokenizer:
         for query in queries:
             tokens = self.tokenize(query)
             all_tokens.update(tokens)
-        # Limit to max_words
-        all_tokens = list(all_tokens)[: self.max_words]
+        # Sort for deterministic ordering, then limit to max_words
+        all_tokens = sorted(all_tokens)[: self.max_words]
         self.token_index = {token: i + 1 for i, token in enumerate(all_tokens)}
 
     def texts_to_sequences(self, queries):

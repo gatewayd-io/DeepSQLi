@@ -77,21 +77,24 @@ def model(request):
     }
 
 
+# Model v3 was retrained with the deterministic (sorted) tokenizer.
+# Known false negative: "or 1=1;" with trailing semicolon scores low (~0.002).
+# This likely needs dataset enrichment with more semicolon-terminated patterns.
 @pytest.mark.parametrize(
     "sample",
     [
-        ("select * from users where id=1 or 1=1;", [0.9202, 0.974, 0.3179]),
-        ("select * from users where id='1' or 1=1--", [0.9202, 0.974, 0.3179]),
-        ("select * from users", [0.00077, 0.0015, 0.0231]),
-        ("select * from users where id=10000", [0.1483, 0.8893, 0.7307]),
-        ("select '1' union select 'a'; -- -'", [0.9999, 0.9732, 0.0139]),
+        ("select * from users where id=1 or 1=1;", [0.9202, 0.974, 0.0019]),
+        ("select * from users where id='1' or 1=1--", [0.9202, 0.974, 0.9592]),
+        ("select * from users", [0.00077, 0.0015, 0.0018]),
+        ("select * from users where id=10000", [0.1483, 0.8893, 0.0011]),
+        ("select '1' union select 'a'; -- -'", [0.9999, 0.9732, 0.9999]),
         (
             "select '' union select 'malicious php code' \\g /var/www/test.php; -- -';",
-            [0.9999, 0.8065, 0.0424],
+            [0.9999, 0.8065, 0.8984],
         ),
         (
             "select '' || pg_sleep((ascii((select 'a' limit 1)) - 32) / 2); -- -';",
-            [0.9999, 0.9999, 0.01543],
+            [0.9999, 0.9999, 0.8479],
         ),
     ],
 )

@@ -109,6 +109,12 @@ if __name__ == "__main__":
     X, tokenizer = preprocess_text(data, max_words=MAX_WORDS)
     y = data["Label"].values  # Convert to NumPy array for compatibility with KFold
 
+    # Save the deterministic vocabulary for inference
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    vocab_path = os.path.join(script_dir, "sql_tokenizer_vocab.json")
+    tokenizer.save_token_index(vocab_path)
+    print(f"Saved tokenizer vocabulary ({len(tokenizer.token_index)} tokens) to {vocab_path}")
+
     # Initialize cross-validation
     k_folds = 5
     kfold = KFold(n_splits=k_folds, shuffle=True, random_state=42)
@@ -148,15 +154,15 @@ if __name__ == "__main__":
         accuracy = accuracy_score(y_val, y_val_pred)
         precision = precision_score(y_val, y_val_pred)
         recall = recall_score(y_val, y_val_pred)
-        f1_score = calculate_f1_f2(precision, recall, beta=1)
-        f2_score = calculate_f1_f2(precision, recall, beta=2)
+        f1 = calculate_f1_f2(precision, recall, beta=1)
+        f2 = calculate_f1_f2(precision, recall, beta=2)
 
         # Collect fold metrics
         fold_metrics["accuracy"].append(accuracy)
         fold_metrics["precision"].append(precision)
         fold_metrics["recall"].append(recall)
-        fold_metrics["f1"].append(f1_score)
-        fold_metrics["f2"].append(f2_score)
+        fold_metrics["f1"].append(f1)
+        fold_metrics["f2"].append(f2)
 
     # Calculate and display average metrics across folds
     avg_metrics = {metric: np.mean(scores) for metric, scores in fold_metrics.items()}
